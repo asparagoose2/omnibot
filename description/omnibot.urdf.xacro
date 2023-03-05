@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot name="omnibot">
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<box size="0.326 0.206 .094"/>
+			</geometry>
+			<origin xyz="0 0 0.072"/>
+			<material name="white">
+				<color rgba="1 1 1 1"/>
+			</material>
+		</visual>
+	</link>
+
+	<link name="base_laser">
+		<visual>
+			<geometry>
+				<cylinder length="0.02" radius="0.04"/>
+			</geometry>
+		</visual>
+	</link>
+
+	<joint name="base_link_to_base_laser" type="fixed">
+		<parent link="base_link"/>
+		<child link="base_laser"/>
+		<origin rpy="0 0 -0.05" xyz="0.097 0.0 0.125"/>
+	</joint>
+
+</robot>

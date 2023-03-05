@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<robot name="omnibot">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="omnibot">
+
+	<xacro:include filename="inertial_macros.xacro"/>
+
 	<link name="base_link">
 		<visual>
 			<geometry>
@@ -10,6 +13,15 @@
 				<color rgba="1 1 1 1"/>
 			</material>
 		</visual>
+		<collision>
+			<geometry>
+				<box size="0.326 0.206 .094"/>
+			</geometry>
+			<origin xyz="0 0 0.072"/>
+		</collision>
+		<xacro:inertial_box mass="0.5" x="0.326" y="0.206" z="0.094">
+			<origin xyz="0 0 0.072"/>
+		</xacro:inertial_box>
 	</link>
 
 	<link name="base_laser">

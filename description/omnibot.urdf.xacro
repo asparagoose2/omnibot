@@ -3,6 +3,8 @@
 
 	<xacro:include filename="inertial_macros.xacro"/>
 
+	<xacro:include filename="gazebo_control.xacro"/>
+
 	<link name="base_link">
 		<visual>
 			<geometry>
@@ -30,6 +32,14 @@
 				<cylinder length="0.02" radius="0.04"/>
 			</geometry>
 		</visual>
+		<collision>
+			<geometry>
+				<cylinder length="0.02" radius="0.04"/>
+			</geometry>
+		</collision>
+		<xacro:inertial_cylinder mass="0.1" length="0.02" radius="0.04">
+			<origin xyz="0 0 0"/>
+		</xacro:inertial_cylinder>
 	</link>
 
 	<joint name="base_link_to_base_laser" type="fixed">
@@ -39,7 +49,7 @@
 	</joint>
 
 	<gazebo reference="base_laser">
-		<material>Gazebo/Red</material>
+		<material>Gazebo/Blue</material>
 		<sensor type="ray" name="base_laser">
 			<pose>0 0 0 0 0 0</pose>
 			<visualize>true</visualize>
@@ -69,6 +79,11 @@
 		</sensor>
 	</gazebo>
 
+
+
+	<gazebo reference="base_link">
+		<material>Gazebo/Red</material>
+	</gazebo>
 
 
 </robot>

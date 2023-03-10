@@ -36,6 +36,14 @@ def generate_launch_description():
                         arguments=['-topic', 'robot_description',
                                    '-entity', 'my_bot'],
                         output='screen')
+    
+    rviz = Node(
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d' + os.path.join(get_package_share_directory('omnibot'), 'config', 'omnibot.config.rviz')]
+        )
 
 
 
@@ -44,4 +52,5 @@ def generate_launch_description():
         rsp,
         gazebo,
         spawn_entity,
+        rviz
     ])

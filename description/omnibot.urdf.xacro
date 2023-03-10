@@ -8,7 +8,7 @@
 	<link name="base_link">
 		<visual>
 			<geometry>
-				<box size="0.326 0.206 .094"/>
+				<box size="0.26 0.25 0.14"/>
 			</geometry>
 			<origin xyz="0 0 0.072"/>
 			<material name="white">
@@ -17,7 +17,7 @@
 		</visual>
 		<collision>
 			<geometry>
-				<box size="0.326 0.206 .094"/>
+				<box size="0.26 0.25 0.14"/>
 			</geometry>
 			<origin xyz="0 0 0.072"/>
 		</collision>
@@ -29,12 +29,12 @@
 	<link name="base_laser">
 		<visual>
 			<geometry>
-				<cylinder length="0.02" radius="0.04"/>
+				<cylinder length="0.027" radius="0.035"/>
 			</geometry>
 		</visual>
 		<collision>
 			<geometry>
-				<cylinder length="0.02" radius="0.04"/>
+				<cylinder length="0.027" radius="0.035"/>
 			</geometry>
 		</collision>
 		<xacro:inertial_cylinder mass="0.1" length="0.02" radius="0.04">
@@ -45,7 +45,7 @@
 	<joint name="base_link_to_base_laser" type="fixed">
 		<parent link="base_link"/>
 		<child link="base_laser"/>
-		<origin rpy="0 0 0" xyz="0.097 0.0 0.125"/>
+		<origin rpy="0 0 0" xyz="0.075 0 0.1535"/>
 	</joint>
 
 	<gazebo reference="base_laser">

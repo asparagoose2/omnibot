@@ -15,9 +15,10 @@ def move():
     #Receiveing the user's input
     while True:
         print("Let's move your robot")
-        speed = float(input("Input your speed:"))
-        distance = float(input("Type your distance:"))
+        speed = float(input("Input your speed: "))
+        distance = float(input("Type your distance: "))
         direction = float(input("Type your direction:(0-360): "))
+        angular_vel = float(input("Type your angular_vel: "))
         # isForward = input("Foward?: ")#True or False
 
         vel_msg.linear.y=0.0
@@ -28,7 +29,7 @@ def move():
         # calculate x and z velocity
         vel_msg.linear.x = abs(speed)*math.cos(direction*math.pi/180.0)
         vel_msg.linear.y = abs(speed)*math.sin(direction*math.pi/180.0)
-
+        vel_msg.angular.z = angular_vel
 
         # if(isForward):
             # vel_msg.linear.x = abs(speed)
@@ -38,7 +39,6 @@ def move():
         vel_msg.linear.z = 0.0
         vel_msg.angular.x = 0.0
         vel_msg.angular.y = 0.0
-        vel_msg.angular.z = 0.0
 
 
 
@@ -57,6 +57,7 @@ def move():
         #After the loop, stops the robot
         vel_msg.linear.x = 0.0
         vel_msg.linear.y = 0.0
+        vel_msg.angular.z = 0.0
         #Force the robot to stop
         velocity_publisher.publish(vel_msg)
 

@@ -6,7 +6,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
+find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclpy REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -23,10 +26,20 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# ament_cmake_python_install_package(omnibot)
+ament_python_install_package(omnibot)
+
 install(
   DIRECTORY config description launch worlds
-  DESTINATION share/${PROJECT_NAME}
+  DESTINATION ${PROJECT_NAME}
 )
 
 
+install(PROGRAMS
+  scripts/omnibot_driver.py
+  DESTINATION ${PROJECT_NAME}
+)
 ament_package()
+# ament_cmake_python_package()
+
+# ...

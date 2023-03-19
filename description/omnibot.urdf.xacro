@@ -45,7 +45,8 @@
 	<joint name="base_link_to_base_laser" type="fixed">
 		<parent link="base_link"/>
 		<child link="base_laser"/>
-		<origin rpy="0 0 0" xyz="0.075 0 0.1535"/>
+		<origin rpy="0 0 0" xyz="0 0 0.1535"/>
+		<!-- <origin rpy="0 0 0" xyz="0.075 0 0.1535"/> -->
 	</joint>
 
 	<gazebo reference="base_laser">
@@ -64,7 +65,7 @@
 					</horizontal>
 				</scan>
 				<range>
-					<min>0.3</min>
+					<min>0.15</min>
 					<max>12</max>
 					<resolution>0.01</resolution>
 				</range>

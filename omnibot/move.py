@@ -10,7 +10,7 @@ def move():
 
     #Receiveing the user's input
     print("Let's move your robot")
-    speed = input("Input your speed:")
+    speed = input("Input your speed!!:")
     distance = input("Type your distance:")
     direction = input("Type your direction:(0-360)")
     # isForward = input("Foward?: ")#True or False

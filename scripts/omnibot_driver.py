@@ -4,6 +4,7 @@ import rclpy
 from rclpy.time import Duration
 from geometry_msgs.msg import Twist
 
+
 def move():
     # Starts a new node
     rclpy.init()
@@ -15,7 +16,7 @@ def move():
     #Receiveing the user's input
     while True:
         print("Let's move your robot")
-        speed = float(input("Input your speed: "))
+        speed = float(input("Input your speed!!: "))
         distance = float(input("Type your distance: "))
         direction = float(input("Type your direction:(0-360): "))
         angular_vel = float(input("Type your angular_vel: "))

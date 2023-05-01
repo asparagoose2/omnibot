@@ -40,6 +40,33 @@ install(PROGRAMS
   scripts/omnibot_driver.py
   DESTINATION ${PROJECT_NAME}
 )
+
+install(PROGRAMS
+  scripts/Control.py
+  DESTINATION ${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/Lidar.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/Qlearning.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/learning_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/eval_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+
 ament_package()
 # ament_cmake_python_package()
 

@@ -21,7 +21,7 @@ class Twist2Serial(Node):
 
     def listener_callback(self, msg):
         msg = str(msg.linear.x) + ',' + str(msg.linear.y) + ',' + str(msg.angular.z) + '\n'
-        self.get_logger().info('I heard: "%s"' % msg)
+        self.get_logger().info('I heard: "%s"' % msg[:-1])
         # self.ser.write(msg.encode('utf-8'))
         line = self.ser.readline().decode('utf-8').rstrip()
         print(line)

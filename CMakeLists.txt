@@ -34,6 +34,8 @@ install(
   DESTINATION ${PROJECT_NAME}
 )
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+
 
 
 install(PROGRAMS
@@ -63,6 +65,11 @@ install(PROGRAMS
 
 install(PROGRAMS
   scripts/eval_node.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(PROGRAMS
+  scripts/twist2serial.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

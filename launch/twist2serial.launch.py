@@ -7,7 +7,7 @@ from launch.actions import SetEnvironmentVariable
 def generate_launch_description():
     return LaunchDescription([
         SetEnvironmentVariable(
-            name="ROS_LOG_DIR", value='/home/working_dir/logs'
+            name="ROS_LOG_DIR", value='/log/omnibot-arduino'
         ),
         Node(
             package='omnibot',

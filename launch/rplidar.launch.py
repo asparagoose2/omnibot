@@ -7,7 +7,7 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='rplidar_ros',
-            executable='rpilidar_composition',
+            executable='rplidar_composition',
             output='screen',
             parameters=[{
                 'serial_port': '/dev/ttyUSB0',

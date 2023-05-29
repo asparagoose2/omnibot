@@ -7,7 +7,7 @@ from itertools import product
 from sensor_msgs.msg import LaserScan
 from Lidar import CONST_SECTOR_ANGLE
 
-STATE_SPACE_IND_MAX = 729 - 1 # 3 states ^ 6 sectors
+STATE_SPACE_IND_MAX = 19683 - 1 # 3 states ^ 6 sectors
 STATE_SPACE_IND_MIN = 1 - 1
 ACTIONS_IND_MAX = 40 # 14 directions * 3 rotation speeds - 1 stop action (-1,0)
 ACTIONS_IND_MIN = 0
@@ -53,7 +53,11 @@ def createStateSpace():
     s5 = set((0,1,2))
     s6 = set((0,1,2))
 
-    state_space = set(product(s1,s2,s3,s4,s5,s6))
+    s7 = set((0,1,2))
+    s8 = set((0,1,2))
+    s9 = set((0,1,2))
+
+    state_space = set(product(s1,s2,s3,s4,s5,s6,s7,s8,s9))
     # state_space = set(product(x1,x2,x3,x4))
     # state_space = set(product(sectors,states_for_sector))
     # return np.arange(0, 180//CONST_SECTOR_ANGLE*4, 1)

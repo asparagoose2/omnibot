@@ -1,0 +1,7 @@
+# RPLidar node configuration
+rplidar:
+  # ROS node name
+  ros__parameters:
+    node_name: rplidar_node
+    angle_compenstate: 123
+    angle_compenstate123: 123

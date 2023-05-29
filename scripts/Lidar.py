@@ -7,7 +7,7 @@ from sensor_msgs.msg import LaserScan
 import rclpy
 
 # Configuration
-CONST_SECTOR_ANGLE = 30 # [degrees]
+CONST_SECTOR_ANGLE = 20 # [degrees]
  
 COLLISION_DISTANCE = 0.20 # LaserScan.range_min = 0.1199999
 NEARBY_DISTANCE = 0.25
@@ -62,17 +62,49 @@ def lidarScan(msgScan: LaserScan):
     # distances in [m], angles in [degrees]
     return ( distances, angles )
 
-def lidarReduction(scan: list):
+def lidarReduction(distances: list, angles: list):
+
     # trim the last and first fourth of the scan
-    scan = scan[90:-90]
+    [distances, angles] = zip(*[(d, angles[i]) for i, d in enumerate(distances) if angles[i] > 270 or angles[i] < 90])
+    # print(list(zip(distances, angles)))
     # find min range in each sector
     lidar = np.array([])
     # print("Lidar reduction:")
     # print("*"*50)
     # print("Number of ranges: ", len(scan))
     # print("Scan: ", scan)
-    for i in range(180 // CONST_SECTOR_ANGLE):
-        min_range = min(scan[i*CONST_SECTOR_ANGLE:(i+1)*CONST_SECTOR_ANGLE])
+    # from -90 to 90
+    relevant_distances = [
+        [distance for distance, angle in zip(distances, angles) if angle > 270 and angle <= 290],
+        [distance for distance, angle in zip(distances, angles) if angle > 290 and angle <= 310],
+        [distance for distance, angle in zip(distances, angles) if angle > 310 and angle <= 330],
+        [distance for distance, angle in zip(distances, angles) if angle > 330 and angle <= 350],
+        [distance for distance, angle in zip(distances, angles) if angle > 350 or angle <= 10],
+        [distance for distance, angle in zip(distances, angles) if angle > 10 and angle <= 30],
+        [distance for distance, angle in zip(distances, angles) if angle > 30 and angle <= 50],
+        [distance for distance, angle in zip(distances, angles) if angle > 50 and angle <= 70],
+        [distance for distance, angle in zip(distances, angles) if angle > 70 and angle <= 90],
+    ]
+    # print(relevant_distances)
+    relevant_distances = [min(asd) for asd in relevant_distances]
+    for min_range in relevant_distances[::-1]:
+        # start_angle = (i*CONST_SECTOR_ANGLE + 90) % 360
+        # end_angle = ((i+1)*CONST_SECTOR_ANGLE + 90) % 360
+        # start_angle = i*CONST_SECTOR_ANGLE - 90
+        # start_angle = 360 + start_angle if start_angle < 0 else start_angle
+        # start_angle = 0 if start_angle == 350 else start_angle
+        # end_angle = (i+1)*CONST_SECTOR_ANGLE - 90
+        # end_angle = 360 + end_angle if end_angle < 0 else end_angle
+        # end_angle = 360 if end_angle == 0 else end_angle
+        # relevant_distances = [distance for distance, angle in zip(distances, angles) if angle > start_angle and angle < end_angle]
+        # print(list(zip(distances, angles)))
+        # print(f'{start_angle}-{end_angle}: {len(relevant_distances)}')
+
+        # min_range = min(distances[i*CONST_SECTOR_ANGLE:(i+1)*CONST_SECTOR_ANGLE])
+        # if (len(relevant_distances) == 0):
+        #     lidar = np.append(lidar, MAX_LIDAR_DISTANCE)
+        #     continue
+        # min_range = min(relevant_distances)
         if min_range == MAX_LIDAR_DISTANCE:
             min_range = MAX_LIDAR_DISTANCE_ENUM
         elif min_range <= MAX_LIDAR_DISTANCE and min_range > FAR_DISTANCE:
@@ -81,6 +113,9 @@ def lidarReduction(scan: list):
             min_range = NEARBY_DISTANCE_ENUM
         elif min_range <= NEARBY_DISTANCE :
             min_range = NEARBY_DISTANCE_ENUM
+        
+        # print(f'{start_angle}-{end_angle}: {min_range}')
+
         lidar = np.append(lidar, min_range)
 
     return lidar

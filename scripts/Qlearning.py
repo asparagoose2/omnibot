@@ -7,7 +7,7 @@ from itertools import product
 from sensor_msgs.msg import LaserScan
 from Lidar import CONST_SECTOR_ANGLE
 
-STATE_SPACE_IND_MAX = 729 - 1 # 3 states ^ 6 sectors
+STATE_SPACE_IND_MAX = 19683 - 1 # 729 - 1 # 3 states ^ 6 sectors
 STATE_SPACE_IND_MIN = 1 - 1
 ACTIONS_IND_MAX = 40 # 14 directions * 3 rotation speeds - 1 stop action (-1,0)
 ACTIONS_IND_MIN = 0
@@ -53,7 +53,16 @@ def createStateSpace():
     s5 = set((0,1,2))
     s6 = set((0,1,2))
 
-    state_space = set(product(s1,s2,s3,s4,s5,s6))
+    s7 = set((0,1,2))
+    s8 = set((0,1,2))
+    s9 = set((0,1,2))
+    # s10 = set((0,1,2))
+    # s11 = set((0,1,2))
+    # s12 = set((0,1,2))
+
+
+    state_space = set(product(s1,s2,s3,s4,s5,s6,s7,s8,s9))
+    print('len(state_space) = ', len(state_space))
     # state_space = set(product(x1,x2,x3,x4))
     # state_space = set(product(sectors,states_for_sector))
     # return np.arange(0, 180//CONST_SECTOR_ANGLE*4, 1)
@@ -160,10 +169,13 @@ def softMaxSelection(Q_table, state_ind, actions, T):
     return ( a, status )
 
 # Reward function for Q-learning - table
-def getReward(action, prev_action, lidar, prev_lidar, crash):
+def getReward(action, prev_action, lidar, prev_lidar, crash, distance_to_goal, prev_distance_to_goal):
     if crash:
         terminal_state = True
-        reward = -10
+        reward = -100
+    elif distance_to_goal < 0.5:
+        terminal_state = True
+        reward = 10
     else:
         # lidar_horizon = np.concatenate((lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
         # prev_lidar_horizon = np.concatenate((prev_lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],prev_lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
@@ -172,7 +184,7 @@ def getReward(action, prev_action, lidar, prev_lidar, crash):
         terminal_state = False
         # Reward from action taken = fowrad -> +0.2 , turn -> -0.1
         if action[0] == 0:
-            r_action = +0.8
+            r_action = +1.0
         elif action[0] == -1:
             r_action = -0.8
         elif action[0] > -30 and action[0] < 30:
@@ -188,11 +200,11 @@ def getReward(action, prev_action, lidar, prev_lidar, crash):
         W = np.append(W, np.linspace(1.1, 0.9, len(lidar_horizon) // 2))
         distance_diff = np.sum( W * ( lidar_horizon - prev_lidar_horizon) )
         if  distance_diff > 0:
-            r_obstacle = +0.2
+            r_obstacle = +0.4
         elif distance_diff == 0:
-            r_obstacle = 0.0    
+            r_obstacle = -0.1    
         else:
-            r_obstacle = -0.2
+            r_obstacle = -0.4
         # Reward from turn left/right change
         if ( prev_action[0] < 0 and action[0] > 0 ) or ( prev_action[0] > 0 and action[0] < 0 ) or (prev_action[1] < 0 and action[1] > 0) or (prev_action[1] > 0 and action[1] < 0):
             r_change = -0.8
@@ -200,12 +212,17 @@ def getReward(action, prev_action, lidar, prev_lidar, crash):
             r_change = 0.0
 
         if(prev_action[0] == action[0] and prev_action[1] == action[1]):
-            r_consistency = 0.3
+            r_consistency = 0.4
         else:
             r_consistency = 0.0
 
+        if distance_to_goal < prev_distance_to_goal:
+            r_distance = 0.4
+        else:
+            r_distance = -0.4
+
         # Cumulative reward
-        reward = r_action + r_obstacle + r_change + r_consistency
+        reward = r_action + r_obstacle + r_change + r_consistency + r_distance - 0.1 # -0.1 is the cost of time
 
     return ( reward, terminal_state )
 

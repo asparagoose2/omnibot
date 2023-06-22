@@ -7,11 +7,11 @@ from sensor_msgs.msg import LaserScan
 import rclpy
 
 # Configuration
-CONST_SECTOR_ANGLE = 30 # [degrees]
+CONST_SECTOR_ANGLE = 20 # [degrees]
  
 COLLISION_DISTANCE = 0.20 # LaserScan.range_min = 0.1199999
-NEARBY_DISTANCE = 0.25
-FAR_DISTANCE = 0.45
+NEARBY_DISTANCE = 0.35
+FAR_DISTANCE = 0.55
 MAX_LIDAR_DISTANCE = 0.65
 
 # COLLISION_DISTANCE_ENUM = 0
@@ -88,12 +88,11 @@ def lidarReduction(scan: list):
 
 # Check - crash
 def checkCrash(scan: list):
-    if np.min(scan) <= COLLISION_DISTANCE:
-        # print("<----  CRASH  ---->")
-        # print("min = ", np.min(scan))
-        # print("scan = ", scan)
-        # print("<----------------->")
 
+    # if np.min(scan) <= COLLISION_DISTANCE:
+        # make sure that this is not a false positive or anomaly
+    close_objects = np.count_nonzero(scan <= COLLISION_DISTANCE)
+    if close_objects > 3:
         return True
     else:
         return False
@@ -124,22 +123,23 @@ def checkGoalNear(x, y, x_goal, y_goal):
         return False
 
 
-# # Callback function
-# def callback(msgScan: LaserScan):
-#     distances, angles = lidarScan(msgScan)
-#     # print type of distances
-#     print("type of distances: ", type(distances))
-#     crash = checkCrash(distances)
-#     object_nearby = checkObjectNearby(distances)
-#     print("range min:{}, max:{}".format(msgScan.range_min, msgScan.range_max))
-#     red_distances = lidarReduction(distances)
-#     print("red_distances = ", red_distances)
-#     print("crash = ", crash)
+# Callback function
+def callback(msgScan: LaserScan):
+    distances, angles = lidarScan(msgScan)
+    # print type of distances
+    print("type of distances: ", type(distances))
+    print("distances = ", distances)
+    crash = checkCrash(distances)
+    object_nearby = checkObjectNearby(distances)
+    print("range min:{}, max:{}".format(msgScan.range_min, msgScan.range_max))
+    red_distances = lidarReduction(distances)
+    print("red_distances = ", red_distances)
+    print("crash = ", crash)
 
 
-# if __name__ == '__main__':
-#     rclpy.init()
-#     LaserNode = rclpy.create_node('LaserNode')
-#     laserSub = LaserNode.create_subscription(LaserScan,'/scan', callback, 10)
-#     rclpy.spin_once(LaserNode)
+if __name__ == '__main__':
+    rclpy.init()
+    LaserNode = rclpy.create_node('LaserNode')
+    laserSub = LaserNode.create_subscription(LaserScan,'/scan', callback, 10)
+    rclpy.spin_once(LaserNode)
 

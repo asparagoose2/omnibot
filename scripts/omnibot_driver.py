@@ -32,10 +32,6 @@ def move():
         vel_msg.linear.y = abs(speed)*math.sin(direction*math.pi/180.0)
         vel_msg.angular.z = angular_vel
 
-        # if(isForward):
-            # vel_msg.linear.x = abs(speed)
-        # else:
-            # vel_msg.linear.x = -abs(speed)
         #Since we are moving just in x-axis
         vel_msg.linear.z = 0.0
         vel_msg.angular.x = 0.0

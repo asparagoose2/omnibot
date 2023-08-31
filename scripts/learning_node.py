@@ -55,7 +55,6 @@ THETA_INIT = 90.0
 X_GOAL = 0.016976527428010722
 Y_GOAL = 3.2001529447737216
 
-# GOAL_ARR =  [(0.31140491366386414, 1.872751235961914), (1.908969521522522, 1.8009099960327148), (4.67496919631958, -0.429350882768631), (7.28209924697876, 2.1210134029388428), (8.304286003112793, -0.034700460731983185)]
 GOAL_ARR =  [(0.12038379907608032, 1.5257762670516968), (1.4389824867248535, 1.753847360610962), (2.747143268585205, 3.2472877502441406), (2.219297409057617, 4.684449195861816)]
 GOAL_ARR_IND = 0
 
@@ -234,32 +233,25 @@ def main():
 
         odomNode = rclpy.create_node('odom_node')
 
-        # setPosPub = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size = 10)
-        # velPub = rospy.Publisher('/cmd_vel', Twist, queue_size = 10)
         setPosPub = node.create_publisher(ModelState, '/gazebo/set_entity_state', 10)
         velPub = node.create_publisher(Twist, '/cmd_vel', 10)
         laserSub = node.create_subscription(LaserScan,'/scan', laserCallback, 10)
         robotDescSub = node.create_subscription(ModelStates, '/model_states', robotDescCallback, 10)
-        # odomSub = odomNode.create_subscription(Odometry, '/odom', odomCallback, 10)
         setModelStateClient = node.create_client(SetEntityState, '/set_entity_state')
         getGazeboModelStateClient = node.create_client(GetEntityState, '/get_entity_state')
 
         initLearning()
         initParams()
-        #sleep(5)
 
         # main loop
         while rclpy.ok():
             msgScan_ready = False
-            # msgScan = rospy.wait_for_message('/scan', LaserScan)
             # time how long it takes to get the laser data
             now_start_laser = node.get_clock().now()
             while not msgScan_ready:
-                # print("waiting for laser data")
                 rclpy.spin_once(node)
                 pass
             now_stop_laser = node.get_clock().now()
-            # print("time to get laser data: ", (now_stop_laser - now_start_laser).nanoseconds / 1e9)
             if (now_stop_laser - now_start_laser).nanoseconds / 1e9 > 0.1:
                 node.get_logger().warn("time to get laser data: %.2f s" % ((now_stop_laser - now_start_laser).nanoseconds / 1e9))
 
@@ -272,7 +264,6 @@ def main():
                 if step_time > 2:
                     text = '\r\nTOO BIG STEP TIME: %.2f s' % step_time
                     node.get_logger().warn(text)
-                    # print(text)
                     log_sim_info.write(text+'\r\n')
 
                 # End of Learning
@@ -317,7 +308,6 @@ def main():
                     log_sim_params.close()
                     node.destroy_node()
                     rclpy.shutdown()
-                    # rospy.signal_shutdown('End of learning')
                 else:
                     ep_time = (node.get_clock().now() - t_ep).nanoseconds / 1e9
                     # End of en Episode
@@ -400,19 +390,12 @@ def main():
                             x , y , theta =  x_init , y_init , theta_init 
                             node.get_logger().info('Robot position: {0} {1} {2}'.format(x, y, theta))
                             robot_in_pos = True
-                            # theta = degrees(getRotation(odomMsg))
-                            # check init pos
-                            # if abs(x-x_init) < 0.01 and abs(y-y_init) < 0.01 and abs(theta-theta_init) < 1:
-                            #     robot_in_pos = True
-                            #     #sleep(2)
-                            # else:
-                            #     robot_in_pos = False
+
                         # First acion
                         elif not first_action_taken:
                             ( lidar, angles ) = lidarScan(msgScan)
                             scan_reduction = lidarReduction(lidar)
                             state_ind = getStateIndex(state_space, scan_reduction)
-                            # ( state_ind, x1, x2 ,x3 ,x4 ) = scanDiscretization(state_space, lidar)
                             crash = checkCrash(lidar)
 
                             if EXPLORATION_FUNCTION == 1 :
@@ -428,16 +411,6 @@ def main():
                             prev_lidar = lidar
                             prev_action = action
                             prev_state_ind = state_ind
-                            # time how long it takes to get position
-                            # node.get_logger().info('Requesting position...')
-                            # now_start_pos = node.get_clock().now()
-                            # x, y, theta = getGazeboModelPossitoin(node, MODEL_NAME)
-                            # now_end_pos = node.get_clock().now()
-                            # node.get_logger().info('got position: {0} {1} {2}'.format(x, y, theta))
-                            # time_to_get_pos = (now_end_pos - now_start_pos).nanoseconds / 1000000000
-                            # node.get_logger().info('time to get position: {0}'.format(time_to_get_pos))
-                            # if time_to_get_pos > 0.1:
-                                # node.get_logger().warn('time to get position: {0}'.format(time_to_get_pos))
                             distance_to_goal = getDistanceToGoal(robot_current_x, robot_current_y, GOAL_ARR[GOAL_ARR_IND][0], GOAL_ARR[GOAL_ARR_IND][1])
                             
 
@@ -460,9 +433,6 @@ def main():
                             ( lidar, angles ) = lidarScan(msgScan)
                             scan_reduction = lidarReduction(lidar)
                             state_ind = getStateIndex(state_space, scan_reduction)
-                            # x, y, theta = getGazeboModelPossitoin(node, MODEL_NAME)
-                            # x = robot_current_x
-                            # y = robot_current_y
                             prev_distance_to_goal = distance_to_goal
                             distance_to_goal = getDistanceToGoal(robot_current_x, robot_current_y, GOAL_ARR[GOAL_ARR_IND][0], GOAL_ARR[GOAL_ARR_IND][1])
                             # time to reset variables
@@ -470,7 +440,6 @@ def main():
                             if time_took > 0.1:
                                 node.get_logger().warn('time to get position: {0}'.format(time_took))
 
-                            # ( state_ind, x1, x2 ,x3 ,x4 ) = scanDiscretization(state_space, lidar)
 
                             temp_time = node.get_clock().now()
                             crash = checkCrash(lidar)

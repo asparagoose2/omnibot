@@ -1,0 +1,16 @@
+.add-task-container {
+    width: 100%;
+    padding: 2rem;
+    height: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.add-task-button {
+    width: 10rem;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: purple;
+    color: white;
+}

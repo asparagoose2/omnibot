@@ -31,18 +31,6 @@ HORIZON_WIDTH = 75
 def lidarScan(msgScan: LaserScan):
     distances = np.array([])
     angles = np.array([])
-    # print("*"*50)
-    # print("Lidar scan:")
-    # print("*"*50)
-    # print("Time increment: ", msgScan.time_increment)
-    # print("Number of ranges: ", len(msgScan.ranges))
-    # print("Angle increment: ", degrees(msgScan.angle_increment))
-    # print("Angle min: ", degrees(msgScan.angle_min))
-    # print("Angle max: ", degrees(msgScan.angle_max))
-    # print("Range min: ", msgScan.range_min)
-    # print("Range max: ", msgScan.range_max)
-    # print("*"*50)
-
 
     for i in range(len(msgScan.ranges)):
         angle = degrees(i * msgScan.angle_increment)
@@ -59,7 +47,6 @@ def lidarScan(msgScan: LaserScan):
         distances = np.append(distances, distance)
         angles = np.append(angles, angle)
 
-    # distances in [m], angles in [degrees]
     return ( distances, angles )
 
 def lidarReduction(scan: list):
@@ -67,10 +54,7 @@ def lidarReduction(scan: list):
     scan = scan[90:-90]
     # find min range in each sector
     lidar = np.array([])
-    # print("Lidar reduction:")
-    # print("*"*50)
-    # print("Number of ranges: ", len(scan))
-    # print("Scan: ", scan)
+
     for i in range(180 // CONST_SECTOR_ANGLE):
         min_range = min(scan[i*CONST_SECTOR_ANGLE:(i+1)*CONST_SECTOR_ANGLE])
         if min_range == MAX_LIDAR_DISTANCE:
@@ -88,9 +72,6 @@ def lidarReduction(scan: list):
 
 # Check - crash
 def checkCrash(scan: list):
-
-    # if np.min(scan) <= COLLISION_DISTANCE:
-        # make sure that this is not a false positive or anomaly
     close_objects = np.count_nonzero(scan <= COLLISION_DISTANCE)
     if close_objects > 3:
         return True

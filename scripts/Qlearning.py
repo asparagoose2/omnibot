@@ -37,14 +37,6 @@ def createActions():
 
 # Create state space for Q table
 def createStateSpace():
-    # sectors = np.arange(0,180//CONST_SECTOR_ANGLE,1)
-    # sectors = range(0,180//CONST_SECTOR_ANGLE)
-    # states_for_sector = set((0,1,2,3))
-    
-    # x1 = set((0,1,2))
-    # x2 = set((0,1,2))
-    # x3 = set((0,1,2,3))
-    # x4 = set((0,1,2,3))
 
     s1 = set((0,1,2))
     s2 = set((0,1,2))
@@ -85,24 +77,18 @@ def createQTable(n_states, n_actions):
 # Read Q table from path
 def readQTable(path):
     Q_table = np.load(path)
-    # Q_table = np.genfromtxt(path, delimiter = ' , ')
     return Q_table
 
 # Write Q table to path
 def saveQTable(path, Q_table):
     np.save(path, Q_table)
-    # np.savetxt(path, Q_table, delimiter = ' , ')
 
 # Select the best action a in state
 def getBestAction(Q_table, state_ind, actions):
     if STATE_SPACE_IND_MIN <= state_ind <= STATE_SPACE_IND_MAX:
         status = 'getBestAction => OK'
-        # print('Q_table[state_ind,:] = ', Q_table[state_ind,:])
-        # print('np.argmax(Q_table[state_ind,:]) = ', np.argmax(Q_table[state_ind,:]))
         a_ind = np.argmax(Q_table[state_ind,:])
         a = actions[a_ind]
-        # print('a = ', a)
-        # print('a_ind = ', a_ind)
     else:
         status = 'getBestAction => INVALID STATE INDEX'
         a = getRandomAction(actions)
@@ -111,7 +97,6 @@ def getBestAction(Q_table, state_ind, actions):
 
 # Select random action from actions
 def getRandomAction(actions):
-    # print('getRandomAction')
     n_actions = len(actions)
     a_ind = np.random.randint(n_actions)
     return actions[a_ind]
@@ -133,35 +118,16 @@ def epsiloGreedyExploration(Q_table, state_ind, actions, epsilon):
 def softMaxSelection(Q_table, state_ind, actions, T):
     if STATE_SPACE_IND_MIN <= state_ind <= STATE_SPACE_IND_MAX:
         status = 'softMaxSelection => OK'
-        # print('state_ind = ', state_ind)
-        # print('Q_table[state_ind,:] = ', Q_table[state_ind,:])
         n_actions = len(actions)
         P = np.zeros(n_actions)
 
         # Boltzman distribution
         P = np.exp(Q_table[state_ind,:] / T) / np.sum(np.exp(Q_table[state_ind,:] / T))
 
-        # if T < T_MIN or np.any(np.isnan(P)):
         ( a, status_gba ) = getBestAction(Q_table, state_ind, actions)
         if status_gba == 'getBestAction => INVALID STATE INDEX':
             status = 'softMaxSelection => INVALID STATE INDEX'
-        # else:
-        #     print('P = ', P)
-        #     rnd = np.random.uniform()
-        #     status = 'softMaxSelection => OK'
-        #     if P[0] > rnd:
-        #         a = 0
-        #     elif P[0] <= rnd and (P[0] + P[1]) > rnd:
-        #         a = 1
-        #     elif (P[0] + P[1]) <= rnd:
-        #         a = 2
-        #     else:
-        #         status = 'softMaxSelection => Boltzman distribution error => getBestAction '
-        #         status = status + '\r\nP = (%f , %f , %f) , rnd = %f' % (P[0],P[1],P[2],rnd)
-        #         status = status + '\r\nQ(%d,:) = ( %f, %f, %f) ' % (state_ind,Q_table[state_ind,0],Q_table[state_ind,1],Q_table[state_ind,2])
-        #         ( a, status_gba ) = getBestAction(Q_table, state_ind, actions)
-        #         if status_gba == 'getBestAction => INVALID STATE INDEX':
-        #             status = 'softMaxSelection => INVALID STATE INDEX'
+
     else:
         status = 'softMaxSelection => INVALID STATE INDEX'
         a = getRandomAction(actions)
@@ -177,8 +143,6 @@ def getReward(action, prev_action, lidar, prev_lidar, crash, distance_to_goal, p
         terminal_state = True
         reward = 10
     else:
-        # lidar_horizon = np.concatenate((lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
-        # prev_lidar_horizon = np.concatenate((prev_lidar[(ANGLE_MIN + HORIZON_WIDTH):(ANGLE_MIN):-1],prev_lidar[(ANGLE_MAX):(ANGLE_MAX - HORIZON_WIDTH):-1]))
         lidar_horizon = lidar[ANGLE_MAX:ANGLE_MIN]
         prev_lidar_horizon = prev_lidar[ANGLE_MAX:ANGLE_MIN]
         terminal_state = False
@@ -191,10 +155,6 @@ def getReward(action, prev_action, lidar, prev_lidar, crash, distance_to_goal, p
             r_action = +0.4
         else:
             r_action = -0.1
-        # if action == 0:
-            # r_action = +0.2
-        # else:
-            # r_action = -0.1
         # Reward from crash distance to obstacle change
         W = np.linspace(0.9, 1.1, len(lidar_horizon) // 2)
         W = np.append(W, np.linspace(1.1, 0.9, len(lidar_horizon) // 2))

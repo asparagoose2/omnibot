@@ -1,0 +1,16 @@
+.header {
+    background-color: aqua;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 3rem;
+    padding: 2rem;
+    font-family: 'arial';
+}
+
+.avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 10rem;
+}

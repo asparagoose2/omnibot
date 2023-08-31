@@ -112,7 +112,6 @@ def eval():
                 
 
                 action, status = getBestAction(Q_table, state_ind, action_space)
-                # action, status = epsiloGreedyExploration(Q_table, state_ind, action_space, 0.001)
                 robotDoAction(velPub, action)
 
                 prev_lidar = lidar
@@ -134,7 +133,6 @@ def eval():
 
 
 def robotDescCallback(msg: ModelStates):
-    # print("robotDescCallback")
     global robot_current_x, robot_current_y, robot_current_theta
     # find robot index in msg
     robot_index = msg.name.index('omnibot')

@@ -118,15 +118,9 @@ def robotSetPos(setModelStateClient: Client, x, y, theta, node):
     print("Setting robot position to: x = ", x, " y = ", y, " theta = ", theta)
 
     request: SetEntityState.Request = SetEntityState.Request()
-
-    # print(request.get_fields_and_field_types())
-
     checkpoint = EntityState()
 
-    # print(checkpoint.get_fields_and_field_types())
-
     checkpoint.name = MODEL_NAME
-
     checkpoint.pose.position.x = x
     checkpoint.pose.position.y = y
     checkpoint.pose.position.z = 0.0
@@ -148,35 +142,17 @@ def robotSetPos(setModelStateClient: Client, x, y, theta, node):
 
     request.state = checkpoint
 
-    # node.get_logger().info('Waiting for service...')
-
     response = setModelStateClient.call_async(request)
 
     spin_until_service_complete(node, response)
-    # node.get_logger().info('Service call complete!')
-    # node.get_logger().info('\n***************\nService call response: {}\n***************'.format(response.result()))
-    # node.get_logger().info('Checkpoint: {}'.format(checkpoint))
 
     return ( x , y , theta )
 
 # Set random initial robot position and orientation
 def robotSetRandomPos(client: Client, node: Node):
-    # x_range = np.array([-0.4, 0.6, 0.6, -1.4, -1.4, 2.0, 2.0, -2.5, 1.0, -1.0])
-    # y_range = np.array([-0.4, 0.6, -1.4, 0.6, -1.4, 1.0, -1.0, 0.0, 2.0, 2.0])
     theta_range = np.arange(80,100, 5)
-    #theta_range = np.array([0, 30, 45, 60, 75, 90])
-
-    # randPos = [(0.8114808201789856, -0.8423820734024048), (0.4912653267383575, -0.1094655692577362), (-0.2814577519893647, -0.011593737639486784), (-0.8663828372955322, -0.030562328174713698), (-1.7206780910491877, -0.5033520460128876), (-3.2132842540740967, -0.11692113429307938), (-2.9126062393188477, -1.2681145668029785), (-0.2523593604564667, -1.3452847003936768), (-0.19050727784633636, -2.3495564460754395), (0.2054444998502799, -3.105850458145151), (-0.9114537835121155, -2.699927568435669), (-2.346564769744873, -1.7842795848846436), (-2.4691739082336426, -2.3897945880889893), (-4.406469345092773, -2.013939619064331), (-4.70806884765625, -1.0620890855789185), (-5.671790599823004, -1.037521481513968), (-6.332071781158447, -1.2194573879241943), (-7.0239181518554625, 0.7174206376075654), (-6.216903209686273, 1.6844897270202543), (-6.104583263397217, 2.8831048011779785), (-3.8269104957580566, 2.7027716636657715), (-2.8275387287139893, 1.2168653011322021), (-2.4848532676696844, 2.1406617164611905), (-0.19280089437961578, 3.0058653354644775), (0.7550399303436279, 2.0091824531555176), (2.019897937774658, 2.7707865238189697), (2.5017614364624023, 0.08740662783384323), (2.4202516078948975, -1.0813194513320923), (2.575488805770874, -2.890676736831665), (2.338424682617194, -3.431960105896005), (1.124169945716858, -3.3821284770965576), (0.3094104528427124, -4.90765380859375), (1.7861343622207575, -5.202110767364492), (4.394073009490967, -4.830124378204346), (4.879225730895996, -2.6312358379364014), (4.403538227081299, -1.4720680713653564), (6.447063922882086, -1.7134674787521453), (7.255248546600336, -3.64595389366149), (6.8566737174987855, -5.252413272857675), (7.400508880615234, -6.834506034851074), (7.373484134674072, -7.973130226135254), (5.684469699859619, -7.812014579772949), (4.2650980949401855, -7.588253974914551), (3.885925531387329, -5.613494396209717), (1.474738359451294, -5.2145676612854), (1.5513279438018799, -7.451404571533203), (-3.5431361198425293, -6.648706912994385), (-4.258673667907715, -7.7032999992370605), (-6.745872974395752, -5.647144794464111), (-7.330343723297119, -3.7117271423339844)]
-    # randPos = [(-0.49758601188643786, -0.480672776699093), (-1.2501450777054253, -0.7946224212646498), (-1.3944717645645102, -0.8455899953842182), (-1.3004660606384344, -0.6078346371650698), (-1.0430321693281692, -0.8035286665150565), (-1.3301283121109162, -0.7118629217147655), (-0.8926988243918073, -0.6326068639942934), (-0.8374922871589464, -0.8357300162315389), (-1.4166018962860436, -0.7906885147094771), (-1.395468354225179, -0.6412151455878932)]
-    # randPos = [(-0.3015059909180164, 0.34216007362185097), (-0.12840539261585088, 0.3981820785727991), (-0.2784996040348383, 0.42991653090702237), (-0.43014514511322377, 0.3862257899091052), (-0.4346428512615649, 0.27641052014766954), (-0.5356594867234239, 0.3630613144570207), (-0.3663417937586393, 0.32466265522776644), (-0.31075200439866935, 0.5540633201692416), (-0.2912837289373041, 0.32631640209356044), (-0.6724481001193146, 0.5099976526142443)]
-    # randPos = [(-0.17143021523952484, -0.002101224847133657), (0.1342090517282486, 0.01861917041242344), (-0.14884445071220398, 0.2542758285999298), (0.129226952791214, 0.3353510797023773), (-0.05743641406297684, 0.1279853880405426)]
     randPos = [(-1.6269804301731562e-13, 1.5456203422175541e-13), (-0.20935094356536865, 0.20480971038341522), (0.04647219181060791, 0.16526779532432556), (-0.1246488094329834, -0.04933095723390579)]
 
-
-
-    # print("len randPos: ", len(randPos))
-
-    # ind = np.random.randint(0,len(x_range))
     ind_theta = np.random.randint(0,len(theta_range))
 
     inx = np.random.randint(0,len(randPos))
@@ -238,14 +214,6 @@ def robotFeedbackControl(velPub, x, y, theta, x_goal, y_goal, theta_goal):
 
     return status
 
-# Stability Condition
-def check_stability(k_rho, k_alpha, k_beta):
-    return k_rho > 0 and k_beta < 0 and k_alpha > k_rho
-
-# Strong Stability Condition
-def check_strong_stability(k_rho, k_alpha, k_beta):
-    return k_rho > 0 and k_beta < 0 and k_alpha + 5 * k_beta / 3 - 2 * k_rho / np.pi > 0
-
 
 def getGazeboModelState(node: Node, model_name: str):
     getModelStateClient = node.create_client(GetEntityState, '/get_entity_state')
@@ -288,63 +256,11 @@ def callback(msg):
 if __name__ == "__main__":
     print('Starting omnibot node...')
     rclpy.init()
-    # OdomNode = rclpy.create_node('OdomNode')
-    # LaserNode = rclpy.create_node('LaserNode')
     GazeboNode = rclpy.create_node('GazeboNode')
-
     GazeboNode.get_logger().info('GazeboNode started!')
-
     setModelStateClient = GazeboNode.create_client(SetEntityState, '/set_entity_state')
-
     GazeboNode.get_logger().info('SetEntityState client created!')
-
-    
-    # veloPub = GazeboNode.create_publisher(Twist, '/cmd_vel', 10)
-    
-
-    # setPosPub = GazeboNode.create_publisher(ModelState, '/gazebo/set_entity_state', 10)
-
-    # odomSub = OdomNode.create_subscription(Odometry,'/odom', callback, 10)
-    # laserSub = LaserNode.create_subscription(LaserScan,'/scan', callback, 10)
-
     valid_positions = []
 
     recordValidPositions(GazeboNode, 'omnibot', valid_positions, 4)
-
     print('Valid positions: ', valid_positions)
-
-    # getPosition(OdomNode)
-    # res: GetEntityState.Response = getGazeboModelState(GazeboNode, 'omnibot')
-    # print(res._state.pose.position.x, res._state.pose.position.y, res._state.pose.position.z)
-
-    # print('Omnibot node started!')
-
-    # robotSetRandomPos(setModelStateClient, GazeboNode)
-
-    # for i in range(10):
-    #     # random number between 0 and 360
-    #     angle = np.random.randint(0,360)
-    #     print('Angle: ', angle)
-    #     robotGoAngle(veloPub, angle)
-    #     time.sleep(2)
-
-    # robotStop(veloPub)
-
-    # robotGoForward(veloPub)
-    # robotSetPos(setModelStateClient, 0.0, 0.0, 0.0,GazeboNode)
-    # robotSetRandomPos(setModelStateClient, GazeboNode)
-    # sleep 2 seconds
-    # time.sleep(2)
-    # robotSetRandomPos(setModelStateClient, GazeboNode)
-    # sleep 2 seconds
-    # time.sleep(2)
-    # robotSetRandomPos(setModelStateClient, GazeboNode)
-    
-    
-    # rclpy.spin_once(node=OdomNode)
-    # rclpy.spin_once(node=LaserNode)
-    # rclpy.spin_once(node=GazeboNode)
-
-    
-
-    # odomMsg = rclpy.wait_for_message('/odom', Odometry)

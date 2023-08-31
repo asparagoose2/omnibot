@@ -1,0 +1,19 @@
+.controller-icon {
+    transition: all 0.2s;
+}
+
+.controller-icon:hover {
+    background-color: rgba(221, 221, 221, 0.473);
+    cursor: pointer;
+}
+
+.controller-button:disabled .controller-icon {
+    background-color: rgb(221, 221, 221);
+}
+
+.controller-container .controller-button {
+    padding: 0;
+    border: none;
+    width: fit-content;
+    height: fit-content;
+}
